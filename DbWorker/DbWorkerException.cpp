@@ -9,5 +9,5 @@ DbWorkerException::DbWorkerException( const QSqlDatabase & db )
 {}
 
 DbWorkerException::DbWorkerException( const QSqlQuery & query )
-  : std::runtime_error( query.lastError().text().toStdString() )
+  : std::runtime_error( QString( "%1 : %2" ).arg( query.lastError().text() ).arg( query.lastQuery() ).toStdString() )
 {}
