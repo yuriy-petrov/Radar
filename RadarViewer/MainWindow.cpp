@@ -56,7 +56,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::restoreUiState()
 {
+#ifdef Q_OS_WIN
+    QSettings settings( qApp->applicationDirPath() + qAppName() + ".ini", QSettings::IniFormat );
+#else
     QSettings settings;
+#endif
     restoreGeometry( settings.value( "geometry", saveGeometry() ).toByteArray() );
     ui->splitter->restoreState( settings.value( ui->splitter->objectName(), ui->splitter->saveState() ).toByteArray() );
     ui->splitter_2->restoreState(
@@ -72,7 +76,11 @@ void MainWindow::restoreUiState()
 
 void MainWindow::saveUiState()
 {
+#ifdef Q_OS_WIN
+    QSettings settings( qApp->applicationDirPath() + qAppName() + ".ini", QSettings::IniFormat );
+#else
     QSettings settings;
+#endif
     settings.setValue( "geometry", saveGeometry() );
     settings.setValue( ui->splitter->objectName(), ui->splitter->saveState() );
     settings.setValue( ui->splitter_2->objectName(), ui->splitter_2->saveState() );
