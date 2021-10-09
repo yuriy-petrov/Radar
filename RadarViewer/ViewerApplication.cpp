@@ -8,6 +8,8 @@ ViewerApplication::ViewerApplication( int & argc, char ** argv )
   , _trackController( _mainWindow.trackScene() )
   , _historyTrackController( _mainWindow.historyTrackScene() )
 {
+    _historyTrackController.setTrackFade( false );
+
     connect( &_mainWindow, &MainWindow::trackSelected, this, [this]( const QString & id ) {
         _trackController.setSelected( id );
     } );

@@ -10,6 +10,15 @@ const int UnselectedPenWidth   = 0.0;
 const auto SelectedEdgeColor   = Qt::red;
 const auto UnselectedEdgeColor = Qt::lightGray;
 
+template<class T, template<class> class C>
+double getOpacity( typename C<T>::const_iterator it, const C<T> & container, double maxVisibleElements, bool isFade )
+{
+    return isFade
+             ? qBound( 0.0, maxVisibleElements - (double)std::distance( it, container.cend() ), maxVisibleElements )
+                 / maxVisibleElements
+             : 1.0;
+}
+
 } // namespace
 
 Track::Track( QGraphicsScene * scene )
@@ -46,10 +55,7 @@ void Track::appendPlots( const QList<AirObject> & airObjects )
                                            PlotSize,
                                            PlotSize ) );
 
-        setupLastPlot();
         if ( _plots.size() > 1 ) {
-            ( *( _plots.end() - 2 ) )
-              ->setPen( QPen( Qt::lightGray, _isSelected ? SelectedPenWidth : UnselectedPenWidth ) );
             _edges << _scene->addLine(
               QLineF( _plots.last()->rect().center(), ( *( _plots.end() - 2 ) )->rect().center() ),
               QPen( _isSelected ? SelectedEdgeColor : UnselectedEdgeColor,
@@ -57,6 +63,8 @@ void Track::appendPlots( const QList<AirObject> & airObjects )
         }
         _text->setPos( airObject.pos() * 1000 );
     }
+
+    updatePlots();
 }
 
 void Track::setSelected( bool value )
@@ -68,7 +76,6 @@ void Track::setSelected( bool value )
         pen.setWidthF( _isSelected ? SelectedPenWidth : UnselectedPenWidth );
         plot->setPen( pen );
     }
-    setupLastPlot();
 
     for ( auto edge : _edges ) {
         auto pen = edge->pen();
@@ -78,7 +85,29 @@ void Track::setSelected( bool value )
     }
 }
 
-void Track::setupLastPlot()
+void Track::setFade( bool value )
 {
-    _plots.last()->setPen( QPen( Qt::blue, _isSelected ? SelectedPenWidth : 0.0 ) );
+    _isFade = value;
+    updatePlots();
+}
+
+void Track::updatePlots()
+{
+    const double MaxVisiblePlots = 30.0;
+
+    for ( auto it = _plots.cbegin(); it != _plots.cend(); ++it ) {
+        if ( it != _plots.cend() - 1 ) {
+            ( *it )->setPen( QPen( Qt::lightGray, 0.0 ) );
+            ( *it )->setOpacity( getOpacity( it, _plots, MaxVisiblePlots, _isFade ) );
+        } else {
+            ( *it )->setPen( QPen( Qt::blue, 0.0 ) );
+            ( *it )->setOpacity( 1.0 );
+        }
+    }
+
+    for ( auto it = _edges.cbegin(); it != _edges.cend(); ++it ) {
+        if ( it != _edges.cend() - 1 ) {
+            ( *it )->setOpacity( getOpacity( it, _edges, MaxVisiblePlots, _isFade ) );
+        }
+    }
 }

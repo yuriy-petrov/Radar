@@ -13,10 +13,13 @@ public:
 
     void setSelected( bool value );
 
+    void setFade( bool value );
+
 private:
-    void setupLastPlot();
+    void updatePlots();
 
     bool _isSelected = false;
+    bool _isFade     = true;
     QGraphicsScene * _scene;
     QGraphicsTextItem * _text = nullptr;
     QList<QGraphicsRectItem *> _plots;

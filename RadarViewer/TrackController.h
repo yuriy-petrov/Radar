@@ -15,7 +15,10 @@ public:
 
     void setSelected( const QString & id );
 
+    void setTrackFade( bool value );
+
 private:
+    bool _trackFade = true;
     QGraphicsScene * _scene;
     std::map<QString, std::unique_ptr<Track>> _tracks;
 };
