@@ -1,6 +1,7 @@
 #include "ViewerApplication.h"
 
 #include <DbWorkerFactory.h>
+#include <QDebug>
 
 ViewerApplication::ViewerApplication( int & argc, char ** argv )
   : QApplication( argc, argv )
