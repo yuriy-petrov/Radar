@@ -1,5 +1,7 @@
 #include "AirObject.h"
 
+#include <QMap>
+
 namespace {
 const auto KeyId    = QStringLiteral( "id" );
 const auto KeyState = QStringLiteral( "state" );

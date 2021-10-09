@@ -1,6 +1,7 @@
 #include "RadarLoggerApplication.h"
 
 #include <DbWorkerFactory.h>
+#include <QDebug>
 #include <QJsonDocument>
 
 RadarLoggerApplication::RadarLoggerApplication( int & argc, char ** argv )

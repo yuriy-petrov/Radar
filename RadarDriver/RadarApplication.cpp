@@ -1,6 +1,7 @@
 #include "RadarApplication.h"
 
 #include <QRandomGenerator>
+#include <QUuid>
 
 RadarApplication::RadarApplication( int & argc, char ** argv )
   : QCoreApplication( argc, argv )
