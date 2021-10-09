@@ -28,7 +28,9 @@ ViewerApplication::ViewerApplication( int & argc, char ** argv )
 
     _mainWindow.show();
     update();
-    startTimer( 1000 );
+
+    connect( &_mainWindow, &MainWindow::updateIntervalChanged, this, &ViewerApplication::setUpdateInterval );
+    setUpdateInterval( _mainWindow.updateInterval() );
 }
 
 void ViewerApplication::timerEvent( QTimerEvent * event )
@@ -70,4 +72,13 @@ void ViewerApplication::loadHistory( const QDateTime & beginTime, const QDateTim
 {
     auto history = _dbWorker->loadAirObjectsHistory( beginTime, endTime );
     _mainWindow.historyModel().setAirObjectHistory( history );
+}
+
+void ViewerApplication::setUpdateInterval( int value )
+{
+    qDebug() << "Update interval:" << value << "ms";
+    if ( _updateTimerId != -1 ) {
+        killTimer( _updateTimerId );
+    }
+    _updateTimerId = startTimer( value );
 }

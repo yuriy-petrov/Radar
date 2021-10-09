@@ -26,10 +26,13 @@ public:
 
     AirObjectsHistoryModel & historyModel();
 
+    int updateInterval() const;
+
 signals:
     void trackSelected( const QString & id );
     void historyTrackSelected( const QString & id );
     void loadHistoryClicked( const QDateTime & beginTime, const QDateTime & endTime );
+    void updateIntervalChanged( int intervalMsec );
 
 protected:
     // QWidget interface

@@ -18,7 +18,9 @@ protected:
 private:
     void update();
     void loadHistory( const QDateTime & beginTime, const QDateTime & endTime );
+    void setUpdateInterval( int value );
 
+    int _updateTimerId = -1;
     MainWindow _mainWindow;
     QDateTime _lastTrackTime;
     std::unique_ptr<DbWorkerInterface> _dbWorker;

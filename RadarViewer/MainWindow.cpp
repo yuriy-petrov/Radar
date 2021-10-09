@@ -42,6 +42,11 @@ MainWindow::MainWindow( QWidget * parent )
 
     connect( ui->tabWidget, &QTabWidget::currentChanged, this, [this]() { fitScenesToView(); } );
 
+    connect( ui->spinBoxUpdateInterval,
+             QOverload<int>::of( &QSpinBox::valueChanged ),
+             this,
+             &MainWindow::updateIntervalChanged );
+
     createRadarLines( _trackScene );
     createRadarLines( _historyScene );
 
@@ -72,6 +77,8 @@ void MainWindow::restoreUiState()
       settings.value( ui->tableViewHistory->objectName(), ui->tableViewHistory->horizontalHeader()->saveState() )
         .toByteArray() );
     ui->dateTimeEditFrom->setDateTime( settings.value( "from" ).toDateTime() );
+    ui->spinBoxUpdateInterval->setValue(
+      settings.value( "update_interval", ui->spinBoxUpdateInterval->value() ).toInt() );
 }
 
 void MainWindow::saveUiState()
@@ -87,6 +94,7 @@ void MainWindow::saveUiState()
     settings.setValue( ui->tableViewTracks->objectName(), ui->tableViewTracks->horizontalHeader()->saveState() );
     settings.setValue( ui->tableViewHistory->objectName(), ui->tableViewHistory->horizontalHeader()->saveState() );
     settings.setValue( "from", ui->dateTimeEditFrom->dateTime() );
+    settings.setValue( "update_interval", ui->spinBoxUpdateInterval->value() );
 }
 
 void MainWindow::fitScenesToView()
@@ -138,6 +146,11 @@ AirObjectModel & MainWindow::trackModel()
 AirObjectsHistoryModel & MainWindow::historyModel()
 {
     return _historyModel;
+}
+
+int MainWindow::updateInterval() const
+{
+    return ui->spinBoxUpdateInterval->value();
 }
 
 void MainWindow::showEvent( QShowEvent * event )
