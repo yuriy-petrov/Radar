@@ -9,6 +9,7 @@ const double SelectedPenWidth  = 0.0;
 const int UnselectedPenWidth   = 0.0;
 const auto SelectedEdgeColor   = Qt::red;
 const auto UnselectedEdgeColor = Qt::lightGray;
+const double MaxVisiblePlots   = 30.0;
 
 template<class T, template<class> class C>
 double getOpacity( typename C<T>::const_iterator it, const C<T> & container, double maxVisibleElements, bool isFade )
@@ -91,10 +92,26 @@ void Track::setFade( bool value )
     updatePlots();
 }
 
+bool Track::fadePlotsAndHasVisible()
+{
+    bool hasVisible = false;
+    for ( auto it = _plots.cbegin(); it != _plots.cend(); ++it ) {
+        ( *it )->setPen( QPen( Qt::lightGray, 0.0 ) );
+        auto opacity = qBound( 0.0, ( *it )->opacity() - 0.3, 1.0 );
+        ( *it )->setOpacity( opacity );
+        if ( opacity > 0.0 ) {
+            hasVisible = true;
+        }
+    }
+    for ( auto it = _edges.cbegin(); it != _edges.cend(); ++it ) {
+        auto opacity = qBound( 0.0, ( *it )->opacity() - 0.3, 1.0 );
+        ( *it )->setOpacity( opacity );
+    }
+    return hasVisible;
+}
+
 void Track::updatePlots()
 {
-    const double MaxVisiblePlots = 30.0;
-
     for ( auto it = _plots.cbegin(); it != _plots.cend(); ++it ) {
         if ( it != _plots.cend() - 1 ) {
             ( *it )->setPen( QPen( Qt::lightGray, 0.0 ) );

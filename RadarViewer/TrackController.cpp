@@ -8,11 +8,15 @@ void TrackController::setActiveTracks( const QStringList & ids )
 {
     for ( auto it = _tracks.begin(); it != _tracks.end(); ++it ) {
         if ( !ids.contains( it->first ) ) {
-            it = _tracks.erase( it );
-            if ( _tracks.empty() ) {
-                break;
+            if ( _trackFade ) {
+                _lostTracks << it->first;
+            } else {
+                it = _tracks.erase( it );
+                if ( _tracks.empty() ) {
+                    break;
+                }
+                it--;
             }
-            it--;
         }
     }
 }
@@ -26,6 +30,15 @@ void TrackController::setAirObjects( const AirObjectHistory & airObjects )
             trackIt->second->setFade( _trackFade );
         }
         trackIt->second->appendPlots( it.value() );
+    }
+
+    for ( const auto & id : _lostTracks ) {
+        auto trackIt = _tracks.find( id );
+        if ( trackIt != _tracks.end() ) {
+            if ( !trackIt->second->fadePlotsAndHasVisible() ) {
+                _tracks.erase( trackIt );
+            }
+        }
     }
 }
 

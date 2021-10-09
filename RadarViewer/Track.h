@@ -15,6 +15,8 @@ public:
 
     void setFade( bool value );
 
+    bool fadePlotsAndHasVisible();
+
 private:
     void updatePlots();
 

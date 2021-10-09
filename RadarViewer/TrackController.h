@@ -4,6 +4,7 @@
 
 #include <AirObject.h>
 #include <QGraphicsScene>
+#include <QSet>
 
 class TrackController
 {
@@ -21,4 +22,5 @@ private:
     bool _trackFade = true;
     QGraphicsScene * _scene;
     std::map<QString, std::unique_ptr<Track>> _tracks;
+    QSet<QString> _lostTracks;
 };
